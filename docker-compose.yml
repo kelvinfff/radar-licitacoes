@@ -1,0 +1,25 @@
+# Ambiente local: Postgres 18 com pgvector (os vetores entram na Etapa 2).
+# Uso: docker compose up -d db
+services:
+  db:
+    image: pgvector/pgvector:0.8.7-pg18
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-radar}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-radar}
+      POSTGRES_DB: ${POSTGRES_DB:-radar}
+    ports:
+      # Só na interface local. 5433 para não colidir com um Postgres nativo na 5432.
+      - "127.0.0.1:${RADAR_DB_PORTA:-5433}:5432"
+    volumes:
+      # No Postgres 18 o volume vai em /var/lib/postgresql (não mais em .../data).
+      - dados-postgres:/var/lib/postgresql
+      - ./docker/postgres/initdb:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    restart: unless-stopped
+
+volumes:
+  dados-postgres:

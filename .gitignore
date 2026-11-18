@@ -1,0 +1,19 @@
+# Python
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+.venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Segredos e configuração local
+.env
+
+# Editor / SO
+.vscode/
+.idea/
+*:Zone.Identifier
